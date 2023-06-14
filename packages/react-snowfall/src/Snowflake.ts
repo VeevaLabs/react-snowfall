@@ -58,6 +58,14 @@ export interface SnowflakeProps {
    */
   rotationSpeed: [number, number]
   /**
+   * If true, start with a random rotation and adjust by rotationSpeed.
+   */
+  rotate: boolean
+  /**
+   * If true, start images at the bottom of the frame.
+   */
+  up: boolean
+  /**
    * The minimum and maximum opacity of the snowflake image.
    *
    * This value only applies to snowflakes that are using images.
@@ -78,6 +86,8 @@ export const defaultConfig: SnowflakeProps = {
   wind: [-0.5, 2.0],
   changeFrequency: 200,
   rotationSpeed: [-1.0, 1.0],
+  rotate: true,
+  up: false,
   opacity: [1, 1],
 }
 
@@ -130,6 +140,7 @@ class Snowflake {
     this.updateConfig(config)
 
     // Setting initial parameters
+    const { up, rotate } = this.config
     const { radius, wind, speed, rotationSpeed, opacity } = this.config
 
     this.params = {
@@ -190,7 +201,7 @@ class Snowflake {
     if (this.params.y > offsetHeight + radius) this.params.y = -radius
 
     // Apply rotation
-    if (this.image) {
+    if (this.image && this.config.rotate) {
       this.params.rotation = (rotation + rotationSpeed) % 360
     }
 
@@ -254,11 +265,7 @@ class Snowflake {
    * @param ctx The canvas context to draw to
    */
   public drawImage(ctx: CanvasRenderingContext2D): void {
-    const { x, y, rotation, radius } = this.params
-
-    const radian = (rotation * Math.PI) / 180
-    const cos = Math.cos(radian)
-    const sin = Math.sin(radian)
+    const { x, y, radius } = this.params
 
     // Save the current state to avoid affecting other drawings if changing the opacity
     if (this.params.opacity !== 1) {
@@ -269,7 +276,11 @@ class Snowflake {
     // Translate to the location that we will be drawing the snowflake, including any rotation that needs to be applied
     // The arguments for setTransform are: a, b, c, d, e, f
     // a (scaleX), b (skewY), c (skewX), d (scaleY), e (translateX), f (translateY)
-    ctx.setTransform(cos, sin, -sin, cos, x, y)
+    // ctx.setTransform(cos, sin, -sin, cos, x, y)
+
+    ctx.setTransform(1, 0, 0, 1, x, y)
+    const updated_y = this.config.up ? ctx.canvas.offsetHeight - radius * 2 - y : y
+    ctx.setTransform(1, 0, 0, 1, x, updated_y)
 
     // Draw the image with the center of the image at the center of the current location
     const image = this.getImageOffscreenCanvas(this.image!, radius)
