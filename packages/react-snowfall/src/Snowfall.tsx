@@ -26,6 +26,8 @@ const Snowfall = ({
   snowflakeCount = 150,
   images,
   style,
+    up = false,
+    rotate = true
 }: SnowfallProps = {}): JSX.Element => {
   const mergedStyle = useSnowfallStyle(style)
 
@@ -34,7 +36,7 @@ const Snowfall = ({
   const animationFrame = useRef(0)
 
   const lastUpdate = useRef(Date.now())
-  const config = useDeepMemo<SnowflakeProps>({ color, changeFrequency, radius, speed, wind, rotationSpeed, images })
+  const config = useDeepMemo<SnowflakeProps>({ color, changeFrequency, radius, speed, wind, rotationSpeed, images, up, rotate })
   const snowflakes = useSnowflakes(canvasRef, snowflakeCount, config)
 
   const render = useCallback(

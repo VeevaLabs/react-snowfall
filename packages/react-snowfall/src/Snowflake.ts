@@ -57,6 +57,14 @@ export interface SnowflakeProps {
    * The default value is `[-1.0, 1.0]`.
    */
   rotationSpeed: [number, number]
+    /**
+     * If true, start with a random rotation and adjust by rotationSpeed.
+     */
+    rotate: boolean
+    /**
+     * If true, start images at the bottom of the frame.
+     */
+    up: boolean
 }
 
 export type SnowflakeConfig = Partial<SnowflakeProps>
@@ -68,6 +76,8 @@ export const defaultConfig: SnowflakeProps = {
   wind: [-0.5, 2.0],
   changeFrequency: 200,
   rotationSpeed: [-1.0, 1.0],
+    rotate: true,
+    up: false
 }
 
 interface SnowflakeParams {
@@ -100,8 +110,8 @@ class Snowflake {
     this.updateConfig(config)
 
     // Setting initial parameters
-    const { radius, wind, speed, rotationSpeed } = this.config
-
+        const { up, rotate } = this.config;
+        const { radius, wind, speed, rotationSpeed } = this.config
     this.params = {
       x: random(0, canvas.offsetWidth),
       y: random(-canvas.offsetHeight, 0),
@@ -110,10 +120,10 @@ class Snowflake {
       speed: random(...speed),
       wind: random(...wind),
       rotationSpeed: random(...rotationSpeed),
-      nextSpeed: random(...wind),
-      nextWind: random(...speed),
-      nextRotationSpeed: random(...rotationSpeed),
-    }
+            nextSpeed: random(...speed),
+            nextWind: random(...wind),
+            nextRotationSpeed: random(...rotationSpeed)
+        };
 
     this.framesSinceLastUpdate = 0
   }
@@ -159,7 +169,7 @@ class Snowflake {
     if (this.params.y > canvas.offsetHeight + radius) this.params.y = -radius
 
     // Apply rotation
-    if (this.image) {
+        if (this.image && this.config.rotate) {
       this.params.rotation = (rotation + rotationSpeed) % 360
     }
 
@@ -198,7 +208,10 @@ class Snowflake {
     if (this.image) {
       // ctx.save()
       // ctx.translate(this.params.x, this.params.y)
-      ctx.setTransform(1, 0, 0, 1, this.params.x, this.params.y)
+            const y = this.config.up
+                ? ctx.canvas.offsetHeight - this.params.radius * 2 - this.params.y
+                : this.params.y
+      ctx.setTransform(1, 0, 0, 1, this.params.x, y)
 
       const radius = Math.ceil(this.params.radius)
       ctx.rotate((this.params.rotation * Math.PI) / 180)
