@@ -23,7 +23,7 @@ export const Snowfall = ({
   style,
   up = false,
   rotate = true
-}: SnowfallProps = {}): JSX.Element => {
+}: SnowfallProps = {}): React.ReactNode => {
   const mergedStyle = useSnowfallStyle(style)
 
   const canvasRef = useRef<HTMLCanvasElement>(null)

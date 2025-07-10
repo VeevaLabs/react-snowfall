@@ -2,11 +2,13 @@ import isEqual from 'react-fast-compare';
 import { lerp, random, randomElement, twoPi } from './utils.js';
 export const defaultConfig = {
     color: '#dee4fd',
-    radius: [0.5, 3.0],
-    speed: [1.0, 3.0],
-    wind: [-0.5, 2.0],
+    radius: [0.5, 3],
+    speed: [1, 3],
+    wind: [-0.5, 2],
     changeFrequency: 200,
     rotationSpeed: [-1.0, 1.0],
+    rotate: true,
+    up: false,
     opacity: [1, 1],
 };
 /**
@@ -30,14 +32,16 @@ class Snowflake {
         return snowflakes;
     }
     constructor(canvas, config = {}) {
-        // Set custom config
-        this.updateConfig(config);
+        // Setting custom config
+        this.config = { ...defaultConfig, ...config };
+        // Setting initial image
+        this.selectImage();
         // Setting initial parameters
-        const { radius, wind, speed, rotationSpeed, opacity } = this.config;
+        const { radius, wind, speed, rotationSpeed, opacity, up, rotate } = this.config;
         this.params = {
             x: random(0, canvas.offsetWidth),
             y: random(-canvas.offsetHeight, 0),
-            rotation: random(0, 360),
+            rotation: rotate ? random(0, 360) : 0,
             radius: random(...radius),
             speed: random(...speed),
             wind: random(...wind),
@@ -62,10 +66,10 @@ class Snowflake {
         this.config = { ...defaultConfig, ...config };
         this.config.changeFrequency = random(this.config.changeFrequency, this.config.changeFrequency * 1.5);
         // Update the radius if the config has changed, it won't gradually update on it's own
-        if (this.params && !isEqual(this.config.radius, previousConfig === null || previousConfig === void 0 ? void 0 : previousConfig.radius)) {
+        if (!isEqual(this.config.radius, previousConfig.radius)) {
             this.params.radius = random(...this.config.radius);
         }
-        if (!isEqual(this.config.images, previousConfig === null || previousConfig === void 0 ? void 0 : previousConfig.images)) {
+        if (!isEqual(this.config.images, previousConfig.images)) {
             this.selectImage();
         }
     }
@@ -86,7 +90,7 @@ class Snowflake {
         if (this.params.y > offsetHeight + radius)
             this.params.y = -radius;
         // Apply rotation
-        if (this.image) {
+        if (this.image && this.config.rotate) {
             this.params.rotation = (rotation + rotationSpeed) % 360;
         }
         // Update the wind, speed and rotation towards the desired values
@@ -100,8 +104,6 @@ class Snowflake {
     }
     getImageOffscreenCanvas(image, size) {
         var _a, _b;
-        if (image instanceof HTMLImageElement && image.loading)
-            return image;
         let sizes = Snowflake.offscreenCanvases.get(image);
         if (!sizes) {
             sizes = {};
@@ -144,10 +146,7 @@ class Snowflake {
      * @param ctx The canvas context to draw to
      */
     drawImage(ctx) {
-        const { x, y, rotation, radius } = this.params;
-        const radian = (rotation * Math.PI) / 180;
-        const cos = Math.cos(radian);
-        const sin = Math.sin(radian);
+        const { x, y, radius } = this.params;
         // Save the current state to avoid affecting other drawings if changing the opacity
         if (this.params.opacity !== 1) {
             ctx.save();
@@ -156,7 +155,9 @@ class Snowflake {
         // Translate to the location that we will be drawing the snowflake, including any rotation that needs to be applied
         // The arguments for setTransform are: a, b, c, d, e, f
         // a (scaleX), b (skewY), c (skewX), d (scaleY), e (translateX), f (translateY)
-        ctx.setTransform(cos, sin, -sin, cos, x, y);
+        // ctx.setTransform(cos, sin, -sin, cos, x, y)
+        const updated_y = this.config.up ? ctx.canvas.offsetHeight - radius * 2 - y : y;
+        ctx.setTransform(1, 0, 0, 1, x, updated_y);
         // Draw the image with the center of the image at the center of the current location
         const image = this.getImageOffscreenCanvas(this.image, radius);
         ctx.drawImage(image, -(radius / 2), -(radius / 2), radius, radius);

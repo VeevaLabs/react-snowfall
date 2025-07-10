@@ -143,8 +143,7 @@ class Snowflake {
     this.selectImage()
 
     // Setting initial parameters
-    const { up, rotate } = this.config
-    const { radius, wind, speed, rotationSpeed, opacity } = this.config
+    const { radius, wind, speed, rotationSpeed, opacity, up, rotate } = this.config
 
     this.params = {
       x: random(0, canvas.offsetWidth),
@@ -203,7 +202,6 @@ class Snowflake {
     if (this.params.y > offsetHeight + radius) this.params.y = -radius
 
     // Apply rotation
-    if (this.image && this.config.rotate) {
     if (this.image && this.config.rotate) {
       this.params.rotation = (rotation + rotationSpeed) % 360
     }
@@ -280,7 +278,6 @@ class Snowflake {
     // a (scaleX), b (skewY), c (skewX), d (scaleY), e (translateX), f (translateY)
     // ctx.setTransform(cos, sin, -sin, cos, x, y)
 
-    ctx.setTransform(1, 0, 0, 1, x, y)
     const updated_y = this.config.up ? ctx.canvas.offsetHeight - radius * 2 - y : y
     ctx.setTransform(1, 0, 0, 1, x, updated_y)
 

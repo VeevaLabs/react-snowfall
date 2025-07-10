@@ -55,12 +55,6 @@ export interface SnowflakeProps {
      */
     rotationSpeed: [number, number];
     /**
-     * The minimum and maximum opacity of the snowflake image.
-     *
-     * This value only applies to snowflakes that are using images.
-     */
-    opacity: [number, number];
-    /**
      * If true, start with a random rotation and adjust by rotationSpeed.
      */
     rotate: boolean;
@@ -68,6 +62,16 @@ export interface SnowflakeProps {
      * If true, start images at the bottom of the frame.
      */
     up: boolean;
+    /**
+     * The minimum and maximum opacity of the snowflake image.
+     *
+     * This value only applies to snowflakes that are using images.
+     *
+     * The values will be randomly selected within this range.
+     *
+     * The default value is `[1, 1]`.
+     */
+    opacity: [number, number];
 }
 export type SnowflakeConfig = Partial<SnowflakeProps>;
 export declare const defaultConfig: SnowflakeProps;

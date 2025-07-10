@@ -14,11 +14,11 @@ export function random(min, max) {
     }
 }
 /**
- * Linear interpolation function to gradually step towards a target value
- * @param start The current value
- * @param end The target value
- * @param normal The rate of change between 0 and 1 (0 = no change, 1 = instant)
- */
+* Linear interpolation function to gradually step towards a target value
+* @param start The current value
+* @param end The target value
+* @param normal The rate of change between 0 and 1 (0 = no change, 1 = instant)
+*/
 export function lerp(start, end, normal) {
     return (1 - normal) * start + normal * end;
 }
@@ -33,9 +33,9 @@ export function randomElement(items) {
     return items[index];
 }
 /**
- * Gets the height and width of the provided HTML element
- * @param element The html element to measure
- */
+* Gets the height and width of the provided HTML element
+* @param element The html element to measure
+*/
 export function getSize(element) {
     if (!element)
         return { height: 0, width: 0 };
