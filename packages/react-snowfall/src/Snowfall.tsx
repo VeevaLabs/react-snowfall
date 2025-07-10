@@ -6,7 +6,7 @@ import { useComponentSize, useDeepMemo, useSnowfallStyle } from './hooks.js'
 export interface SnowfallProps extends Partial<SnowfallCanvasConfig> {
   /**
    * Any style properties that will be passed to the canvas element.
-   */
+   **/
   style?: React.CSSProperties
 }
 

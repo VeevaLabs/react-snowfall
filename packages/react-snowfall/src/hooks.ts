@@ -8,7 +8,7 @@ import { getSize } from './utils.js'
  * size. Falls back to listening for resize events on the window.
  * @param ref A ref to the HTML element to be measured
  */
-export const useComponentSize = (ref: React.RefObject<HTMLElement>) => {
+export const useComponentSize = (ref: React.RefObject<HTMLElement | null>) => {
   const [size, setSize] = useState(getSize(ref.current))
 
   const resizeHandler = useCallback(() => {
@@ -43,34 +43,13 @@ export const useComponentSize = (ref: React.RefObject<HTMLElement>) => {
  * @param overrides The style prop passed into the component
  */
 export const useSnowfallStyle = (overrides?: React.CSSProperties): React.CSSProperties => {
-  const styles = useMemo(
+  return useMemo(
     () => ({
       ...snowfallBaseStyle,
-      ...(overrides || {}),
+      ...overrides,
     }),
     [overrides],
   )
-
-  return styles
-}
-
-/**
- * Same as `React.useEffect` but uses a deep comparison on the dependency array. This should only
- * be used when working with non-primitive dependencies.
- *
- * @param effect Effect callback to run
- * @param deps Effect dependencies
- */
-export function useDeepCompareEffect(effect: React.EffectCallback, deps: React.DependencyList) {
-  const ref = useRef<React.DependencyList>(deps)
-
-  // Only update the current dependencies if they are not deep equal
-  if (!isEqual(deps, ref.current)) {
-    ref.current = deps
-  }
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  return useEffect(effect, ref.current)
 }
 
 /**

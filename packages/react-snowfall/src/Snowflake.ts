@@ -81,9 +81,9 @@ export type SnowflakeConfig = Partial<SnowflakeProps>
 
 export const defaultConfig: SnowflakeProps = {
   color: '#dee4fd',
-  radius: [0.5, 3.0],
-  speed: [1.0, 3.0],
-  wind: [-0.5, 2.0],
+  radius: [0.5, 3],
+  speed: [1, 3],
+  wind: [-0.5, 2],
   changeFrequency: 200,
   rotationSpeed: [-1.0, 1.0],
   rotate: true,
@@ -136,8 +136,11 @@ class Snowflake {
   private image?: CanvasImageSource
 
   public constructor(canvas: HTMLCanvasElement, config: SnowflakeConfig = {}) {
-    // Set custom config
-    this.updateConfig(config)
+    // Setting custom config
+    this.config = { ...defaultConfig, ...config }
+
+    // Setting initial image
+    this.selectImage()
 
     // Setting initial parameters
     const { up, rotate } = this.config
@@ -146,7 +149,7 @@ class Snowflake {
     this.params = {
       x: random(0, canvas.offsetWidth),
       y: random(-canvas.offsetHeight, 0),
-      rotation: random(0, 360),
+      rotation: rotate ? random(0, 360) : 0,
       radius: random(...radius),
       speed: random(...speed),
       wind: random(...wind),
@@ -174,11 +177,11 @@ class Snowflake {
     this.config.changeFrequency = random(this.config.changeFrequency, this.config.changeFrequency * 1.5)
 
     // Update the radius if the config has changed, it won't gradually update on it's own
-    if (this.params && !isEqual(this.config.radius, previousConfig?.radius)) {
+    if (!isEqual(this.config.radius, previousConfig.radius)) {
       this.params.radius = random(...this.config.radius)
     }
 
-    if (!isEqual(this.config.images, previousConfig?.images)) {
+    if (!isEqual(this.config.images, previousConfig.images)) {
       this.selectImage()
     }
   }
@@ -193,7 +196,6 @@ class Snowflake {
 
   public update(offsetWidth: number, offsetHeight: number, framesPassed = 1): void {
     const { x, y, rotation, rotationSpeed, nextRotationSpeed, wind, speed, nextWind, nextSpeed, radius } = this.params
-
     // Update current location, wrapping around if going off the canvas
     this.params.x = (x + wind * framesPassed) % (offsetWidth + radius * 2)
     if (this.params.x > offsetWidth + radius) this.params.x = -radius
@@ -201,6 +203,7 @@ class Snowflake {
     if (this.params.y > offsetHeight + radius) this.params.y = -radius
 
     // Apply rotation
+    if (this.image && this.config.rotate) {
     if (this.image && this.config.rotate) {
       this.params.rotation = (rotation + rotationSpeed) % 360
     }
@@ -217,7 +220,6 @@ class Snowflake {
   }
 
   private getImageOffscreenCanvas(image: CanvasImageSource, size: number): CanvasImageSource {
-    if (image instanceof HTMLImageElement && image.loading) return image
     let sizes = Snowflake.offscreenCanvases.get(image)
 
     if (!sizes) {

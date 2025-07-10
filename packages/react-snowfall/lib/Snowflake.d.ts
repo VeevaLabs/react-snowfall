@@ -60,6 +60,14 @@ export interface SnowflakeProps {
      * This value only applies to snowflakes that are using images.
      */
     opacity: [number, number];
+    /**
+     * If true, start with a random rotation and adjust by rotationSpeed.
+     */
+    rotate: boolean;
+    /**
+     * If true, start images at the bottom of the frame.
+     */
+    up: boolean;
 }
 export type SnowflakeConfig = Partial<SnowflakeProps>;
 export declare const defaultConfig: SnowflakeProps;

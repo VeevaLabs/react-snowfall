@@ -3,7 +3,7 @@
  * size. Falls back to listening for resize events on the window.
  * @param ref A ref to the HTML element to be measured
  */
-export declare const useComponentSize: (ref: React.RefObject<HTMLElement>) => {
+export declare const useComponentSize: (ref: React.RefObject<HTMLElement | null>) => {
     height: number;
     width: number;
 };
@@ -12,14 +12,6 @@ export declare const useComponentSize: (ref: React.RefObject<HTMLElement>) => {
  * @param overrides The style prop passed into the component
  */
 export declare const useSnowfallStyle: (overrides?: React.CSSProperties) => React.CSSProperties;
-/**
- * Same as `React.useEffect` but uses a deep comparison on the dependency array. This should only
- * be used when working with non-primitive dependencies.
- *
- * @param effect Effect callback to run
- * @param deps Effect dependencies
- */
-export declare function useDeepCompareEffect(effect: React.EffectCallback, deps: React.DependencyList): void;
 /**
  * Utility hook to stabilize a reference to a value, the returned value will always match the input value
  * but (unlike an inline object) will maintain [SameValueZero](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)

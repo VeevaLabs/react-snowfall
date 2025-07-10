@@ -8,18 +8,18 @@ export function random(min: number, max: number): number {
   const randomNumber = Math.random() * (max - min + 1) + min
 
   if (!Number.isInteger(min) || !Number.isInteger(max)) {
-    return randomNumber
+      return randomNumber
   } else {
-    return Math.floor(randomNumber)
+      return Math.floor(randomNumber)
   }
 }
 
 /**
- * Linear interpolation function to gradually step towards a target value
- * @param start The current value
- * @param end The target value
- * @param normal The rate of change between 0 and 1 (0 = no change, 1 = instant)
- */
+* Linear interpolation function to gradually step towards a target value
+* @param start The current value
+* @param end The target value
+* @param normal The rate of change between 0 and 1 (0 = no change, 1 = instant)
+*/
 export function lerp(start: number, end: number, normal: number) {
   return (1 - normal) * start + normal * end
 }
@@ -36,15 +36,15 @@ export function randomElement<T>(items: T[]): T {
 }
 
 /**
- * Gets the height and width of the provided HTML element
- * @param element The html element to measure
- */
+* Gets the height and width of the provided HTML element
+* @param element The html element to measure
+*/
 export function getSize(element?: HTMLElement | null) {
   if (!element) return { height: 0, width: 0 }
 
   return {
-    height: element.offsetHeight,
-    width: element.offsetWidth,
+      height: element.offsetHeight,
+      width: element.offsetWidth,
   }
 }
 
