@@ -1,4 +1,4 @@
-import Snowflake, { SnowflakeConfig } from './Snowflake';
+import Snowflake, { SnowflakeConfig } from './Snowflake.js';
 /**
  * A utility hook to manage creating and updating a collection of snowflakes
  * @param canvasRef A ref to the canvas element

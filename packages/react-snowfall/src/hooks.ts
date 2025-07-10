@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import isEqual from 'react-fast-compare'
-import Snowflake, { SnowflakeConfig } from './Snowflake'
-import { snowfallBaseStyle } from './config'
-import { getSize } from './utils'
+import Snowflake, { SnowflakeConfig } from './Snowflake.js'
+import { snowfallBaseStyle } from './config.js'
+import { getSize } from './utils.js'
 
 /**
  * A utility function to create a collection of snowflakes
